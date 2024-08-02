@@ -7,7 +7,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/adamchol/askme/internal/services"
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 )

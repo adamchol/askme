@@ -7,7 +7,9 @@ import (
 	"os"
 	"strings"
 
+	"github.com/adamchol/askme/internal"
 	"github.com/adamchol/askme/internal/services"
+	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/log"
 	"github.com/spf13/cobra"
 )
@@ -41,22 +43,23 @@ func runRoot(cmd *cobra.Command, args []string) {
 		return
 	}
 
-	config, err := services.NewConfigService()
+	config, err := internal.NewConfigService()
 	if err != nil {
 		log.Error("Failed to initialize config", "error", err)
 	}
 
 	userMsg := strings.Join(args, " ")
 
-	LLMService := services.NewLLMAIService(config)
-	switch ModelFlag {
-	case "gpt":
-		err = LLMService.ShowGPTMessage(userMsg)
-	case "claude":
-		err = LLMService.ShowClaudeMessage(userMsg)
-	}
-	if err != nil {
-		log.Error("Failed to show the completion", "error", err)
+	p := tea.NewProgram(&services.UIModel{
+		Input: services.CompletionInput{
+			Prompt: userMsg,
+			Model:  "gpt-4o-mini",
+		},
+		Config: *config,
+	})
+
+	if _, err := p.Run(); err != nil {
+		log.Error("Failed to run a program", "error", err)
 	}
 
 }

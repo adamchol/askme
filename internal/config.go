@@ -1,4 +1,4 @@
-package services
+package internal
 
 import (
 	"fmt"
@@ -7,7 +7,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-type ConfigService struct {
+type Config struct {
 	OpenAI struct {
 		APIKey string `yaml:"api_key"`
 	} `yaml:"openai"`
@@ -16,7 +16,7 @@ type ConfigService struct {
 	} `yaml:"claude"`
 }
 
-func NewConfigService() (*ConfigService, error) {
+func NewConfigService() (*Config, error) {
 	homeDir, err := os.UserHomeDir()
 	if err != nil {
 		return nil, err
@@ -27,7 +27,7 @@ func NewConfigService() (*ConfigService, error) {
 		return nil, err
 	}
 
-	var config ConfigService
+	var config Config
 
 	err = yaml.Unmarshal(data, &config)
 	if err != nil {

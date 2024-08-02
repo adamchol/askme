@@ -1,13 +1,14 @@
-package internal
+package api
 
 import (
 	"context"
 
+	"github.com/adamchol/askme/internal/models"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/sashabaranov/go-openai"
 )
 
-func (m *UIModel) getOpenAICompletionStream(cfg openai.ClientConfig, model string, prompt string) tea.Cmd {
+func GetOpenAICompletionStream(cfg openai.ClientConfig, model string, prompt string) tea.Cmd {
 	return func() tea.Msg {
 		client := openai.NewClientWithConfig(cfg)
 
@@ -24,9 +25,9 @@ func (m *UIModel) getOpenAICompletionStream(cfg openai.ClientConfig, model strin
 
 		stream, err := client.CreateChatCompletionStream(context.Background(), req)
 		if err != nil {
-			return errMsg(err)
+			return models.ErrMsg(err)
 		}
 
-		return initStreamMsg(stream)
+		return models.InitStreamMsg(stream)
 	}
 }
